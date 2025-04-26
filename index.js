@@ -10,9 +10,12 @@ app.use(express.json());
 app.get('/chat', async (req, res) => {
   try {
     // Obtener role y content desde los query parameters
-    const { role = 'user', content } = req.query;
+    const { role, content } = req.query;
 
-    // Validar que content esté presente
+    // Validar que role y content estén presentes
+    if (!role) {
+      return res.status(400).json({ error: 'El parámetro "role" es requerido' });
+    }
     if (!content) {
       return res.status(400).json({ error: 'El parámetro "content" es requerido' });
     }
@@ -41,8 +44,14 @@ app.get('/chat', async (req, res) => {
       }
     );
 
-    // Enviar la respuesta de la API
-    res.json(response.data);
+    // Modificar la respuesta para incluir solo author
+    const modifiedResponse = {
+      ...response.data,
+      author: 'kenn'
+    };
+
+    // Enviar la respuesta modificada
+    res.json(modifiedResponse);
   } catch (error) {
     console.error('Error al procesar la solicitud:', error.message);
     res.status(500).json({ error: 'Error interno del servidor' });
