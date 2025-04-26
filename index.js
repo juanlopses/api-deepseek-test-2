@@ -6,16 +6,13 @@ const port = 3000;
 // Middleware para parsear JSON
 app.use(express.json());
 
-// Endpoint GET para personalizar role y content
+// Endpoint GET para personalizar content
 app.get('/chat', async (req, res) => {
   try {
-    // Obtener role y content desde los query parameters
-    const { role, content } = req.query;
+    // Obtener content desde los query parameters
+    const { content } = req.query;
 
-    // Validar que role y content estén presentes
-    if (!role) {
-      return res.status(400).json({ error: 'El parámetro "role" es requerido' });
-    }
+    // Validar que content esté presente
     if (!content) {
       return res.status(400).json({ error: 'El parámetro "content" es requerido' });
     }
@@ -28,7 +25,7 @@ app.get('/chat', async (req, res) => {
         model: 'deepseek-ai/DeepSeek-V3-0324',
         messages: [
           {
-            role,
+            role: 'user',
             content
           }
         ],
@@ -44,14 +41,16 @@ app.get('/chat', async (req, res) => {
       }
     );
 
-    // Modificar la respuesta para incluir solo author
-    const modifiedResponse = {
-      ...response.data,
+    // Extraer solo content y reasoning_content de la respuesta
+    const apiResponse = response.data;
+    const simplifiedResponse = {
+      content: apiResponse.choices?.[0]?.message?.content || '',
+      reasoning_content: apiResponse.choices?.[0]?.message?.reasoning_content || null,
       author: 'kenn'
     };
 
-    // Enviar la respuesta modificada
-    res.json(modifiedResponse);
+    // Enviar la respuesta simplificada
+    res.json(simplifiedResponse);
   } catch (error) {
     console.error('Error al procesar la solicitud:', error.message);
     res.status(500).json({ error: 'Error interno del servidor' });
