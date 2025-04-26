@@ -1,0 +1,16 @@
+{
+  "name": "deepseek-api",
+  "version": "1.0.0",
+  "description": "API en Node.js para interactuar con DeepSeek-V3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["api", "nodejs", "deepseek"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "*",
+    "express": "*"
+  }
+}
